@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Produtos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .listagem {
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .excluir-btn {
+        background-color: #f44336;
+        color: white;
+        padding: 6px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+  </style>
+</head>
+
+<body>
+  <form id="cadastroForm">
+    <label for="nome">Nome do produto:</label>
+    <input type="text" id="nome" name="nome" required>
+    <label for="descricao">Descrição do produto:</label>
+    <input type="text" id="descricao" name="descricao" required>
+    <label for="valor">Valor do produto:</label>
+    <input type="number" id="valor" name="valor" min="0" step="0.01" required>
+    <label for="disponivel">Disponível para venda:</label>
+    <select id="disponivel" name="disponivel" required>
+      <option value="sim">Sim</option>
+      <option value="nao">Não</option>
+    </select>
+    <input type="submit" value="Cadastrar">
+  </form>
+
+  <div class="listagem">
+    <h2>Listagem de Produtos</h2>
+    <table id="produtosTable">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Disponível</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody id="produtosList"></tbody>
+    </table>
+  </div>
+
+  <script>
+    
+    let produtos = [];
+
+    
+    const form = document.getElementById('cadastroForm');
+    const produtosList = document.getElementById('produtosList');
+    const novoProdutoBtn = document.getElementById('novoProduto');
+
+    // Adicionar um novo produto
+    function adicionarProduto(event) {
+      event.preventDefault();
+      const nome = form.nome.value;
+      const descricao = form.descricao.value;
+      const valor = parseFloat(form.valor.value).toFixed(2);
+      const disponivel = form.disponivel.value === 'sim' ? 'Sim' : 'Não';
+      const produto = { nome, descricao, valor, disponivel };
+      produtos.push(produto);
+      atualizarListagem();
+      form.reset();
+    }
+
+    // Excluir um produto
+    function excluirProduto(index) {
+      produtos.splice(index, 1);
+      atualizarListagem();
+    }
+
+    // Atualizar a listagem
+    function atualizarListagem() {
+      produtosList.innerHTML = '';
+      produtos.sort((a, b) => a.valor - b.valor);
+      produtos.forEach((produto, index) => {
+        const row =
+          `<tr>
+                <td>${produto.nome}</td>
+                <td>${produto.descricao}</td>
+                <td>${produto.disponivel}</td>
+                <td>R$ ${produto.valor}</td>
+                <td><button class="excluir-btn" onclick="excluirProduto(${index})">Excluir</button></td>
+              </tr>`;
+        produtosList.innerHTML += row;
+      });
+    }
+    
+    form.addEventListener('submit', adicionarProduto);
+
+  </script>
+</body>
+
+</html>
